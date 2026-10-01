@@ -6,6 +6,8 @@
     </a>
     <nav class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">
       <a href="#metodo" class="text-white/90 hover:text-brand-black transition-colors">Método</a>
+      <a href="#resultados" class="text-white/90 hover:text-brand-black transition-colors">Resultados</a>
+      <a href="#depoimentos" class="text-white/90 hover:text-brand-black transition-colors">Depoimentos</a>
       <a href="#sobre" class="text-white/90 hover:text-brand-black transition-colors">Sobre</a>
       <a href="#contato" class="text-white/90 hover:text-brand-black transition-colors">Contato</a>
     </nav>
@@ -28,7 +30,7 @@
   <div class="relative max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
     <div class="order-2 lg:order-1">
       <span class="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-widest uppercase text-brand-pink border border-brand-pink/50 rounded-full bg-brand-pink/10">
-        Personal Trainer para Mulheres
+        Personal Trainer para Mulheres · Consultoria online
       </span>
       <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-white">
         Reconstrua sua <span class="text-brand-pink italic">autoestima</span> e volte a se sentir poderosa
@@ -39,12 +41,15 @@
       <p class="text-lg text-white/75 leading-relaxed mb-4 max-w-lg">
         O problema não é falta de força de vontade.
       </p>
-      <p class="text-lg text-white/75 leading-relaxed mb-8 max-w-lg">
+      <p class="text-lg text-white/75 leading-relaxed mb-4 max-w-lg">
         Muitas mulheres carregam inseguranças, cobranças e uma relação difícil com o próprio corpo. Por isso, a verdadeira transformação acontece quando
         <strong class="text-brand-pink font-medium">corpo</strong>,
         <strong class="text-brand-pink font-medium">mente</strong> e
         <strong class="text-brand-pink font-medium">identidade</strong>
         evoluem juntas.
+      </p>
+      <p class="text-base text-brand-pink/90 font-medium mb-8 max-w-lg">
+        Consultoria online: acompanho você de onde estiver, com treino e orientação personalizados.
       </p>
       <div class="flex flex-col sm:flex-row gap-4">
         <a
@@ -67,7 +72,7 @@
         <div class="absolute -inset-4 bg-brand-pink/50 rounded-3xl blur-md"></div>
         <div class="relative w-72 sm:w-80 lg:w-[420px] aspect-[3/4] rounded-3xl overflow-hidden border-2 border-brand-pink shadow-2xl shadow-brand-pink/30">
           <img
-            src="foto1.jpg"
+            src="foto1.jpeg"
             alt="Personal Cinthya Suely"
             class="w-full h-full object-cover object-top"
           />
@@ -89,8 +94,11 @@
       <p class="text-brand-black/75 max-w-2xl mx-auto text-lg mb-3">
         Um acompanhamento que vai além do treino.
       </p>
-      <p class="text-brand-black/75 max-w-2xl mx-auto text-lg">
+      <p class="text-brand-black/75 max-w-2xl mx-auto text-lg mb-3">
         Aqui, você aprende a cuidar do seu corpo, fortalecer sua mente e construir uma versão mais confiante de si mesma.
+      </p>
+      <p class="text-brand-black/80 max-w-2xl mx-auto text-lg font-medium">
+        Tudo com consultoria online: treino, orientação e acompanhamento de onde você estiver.
       </p>
     </div>
 
@@ -105,8 +113,11 @@
         <p class="text-brand-muted leading-relaxed mb-3">
           Treinos personalizados para seu objetivo, sua rotina e seu nível de condicionamento.
         </p>
-        <p class="text-brand-muted leading-relaxed">
+        <p class="text-brand-muted leading-relaxed mb-3">
           Ganhe força, disposição e veja seu corpo responder de forma saudável e consistente.
+        </p>
+        <p class="text-brand-pink/90 text-sm leading-relaxed">
+          Planos adaptados para treinar em casa ou na academia, com suporte online.
         </p>
       </div>
 
@@ -143,6 +154,55 @@
   </div>
 </section>
 
+<!-- Resultados -->
+<section id="resultados" class="py-24 bg-brand-black relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-brand-pink/15 via-transparent to-brand-pink/10"></div>
+  <div class="relative max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <span class="text-brand-pink text-sm font-semibold tracking-widest uppercase">Transformações reais</span>
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 mb-4 text-white">
+        Resultados das <span class="text-brand-pink">minhas alunas</span>
+      </h2>
+      <p class="text-white/70 max-w-2xl mx-auto text-lg">
+        Veja evoluções de mulheres que passaram pela consultoria online e conquistaram mais confiança, disposição e autoestima.
+      </p>
+    </div>
+
+    <app-swipe-carousel [slides]="resultSlides" />
+  </div>
+</section>
+
+<!-- Depoimentos -->
+<section id="depoimentos" class="py-24 bg-gradient-to-b from-brand-pink to-brand-pink-dark relative">
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.1),transparent_70%)]"></div>
+  <div class="relative max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <span class="text-brand-black/70 text-sm font-semibold tracking-widest uppercase">Depoimentos</span>
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 mb-4 text-brand-black">
+        O que dizem sobre o <span class="text-white">acompanhamento</span>
+      </h2>
+      <p class="text-brand-black/75 max-w-2xl mx-auto text-lg mb-3">
+        Relatos de mulheres que transformaram corpo, mente e identidade com consultoria online e acompanhamento próximo.
+      </p>
+      <p class="text-brand-black/70 max-w-2xl mx-auto text-base">
+        Amplie a imagem abaixo para ler todos os depoimentos com calma.
+      </p>
+    </div>
+
+    <figure class="max-w-3xl mx-auto mb-12 rounded-2xl overflow-hidden border-2 border-brand-black/20 bg-brand-black shadow-2xl">
+      <img
+        src="depoimento1.jpeg"
+        alt="Vários depoimentos de alunas sobre a consultoria online"
+        class="w-full h-auto object-contain"
+        loading="lazy"
+      />
+    </figure>
+
+    <p class="text-center text-brand-black/75 font-medium mb-6">Mais depoimentos</p>
+    <app-swipe-carousel [slides]="testimonialSlides" />
+  </div>
+</section>
+
 <!-- Sobre -->
 <section id="sobre" class="py-24 bg-brand-black relative overflow-hidden">
   <div class="absolute inset-0 bg-gradient-to-tr from-brand-pink/20 via-transparent to-brand-pink/10"></div>
@@ -153,7 +213,7 @@
       <div class="absolute inset-0 bg-brand-pink/30 rounded-3xl transform rotate-3 scale-95"></div>
       <div class="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden border-2 border-brand-pink shadow-2xl shadow-brand-pink/20">
         <img
-          src="foto2].png"
+          src="foto2.jpeg"
           alt="Cinthya Suely - Personal Trainer"
           class="w-full h-full object-cover object-center"
         />
@@ -166,7 +226,7 @@
         Cinthya <span class="text-brand-pink">Suely</span>
       </h2>
       <p class="text-white/75 leading-relaxed mb-5">
-        Personal Trainer especializada no desenvolvimento da autoestima feminina.
+        Personal Trainer especializada no desenvolvimento da autoestima feminina, com consultoria online para mulheres de qualquer lugar do Brasil.
       </p>
       <p class="text-white/75 leading-relaxed mb-5">
         Ao longo da minha trajetória, percebi que muitas mulheres não precisavam apenas de um treino. Elas precisavam voltar a acreditar em si mesmas.
@@ -179,6 +239,14 @@
       </p>
 
       <ul class="space-y-4 mb-8">
+        <li class="flex items-center gap-3 text-white/85">
+          <span class="flex-shrink-0 w-6 h-6 rounded-full bg-brand-pink flex items-center justify-center">
+            <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          </span>
+          Consultoria online personalizada
+        </li>
         <li class="flex items-center gap-3 text-white/85">
           <span class="flex-shrink-0 w-6 h-6 rounded-full bg-brand-pink flex items-center justify-center">
             <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -227,8 +295,11 @@
     <p class="text-brand-black/80 text-lg mb-4 max-w-xl mx-auto">
       Você merece se sentir bonita, forte e confiante em todas as fases da sua vida.
     </p>
+    <p class="text-brand-black/80 text-lg mb-4 max-w-xl mx-auto">
+      Atendo online em todo o Brasil. O primeiro passo é uma conversa no WhatsApp.
+    </p>
     <p class="text-brand-black/80 text-lg mb-10 max-w-xl mx-auto">
-      Clique no botão abaixo e converse comigo pelo WhatsApp para dar o primeiro passo.
+      Clique no botão abaixo e comece sua consultoria online personalizada.
     </p>
     <a
       href="https://wa.me/5500000000000"
@@ -248,8 +319,8 @@
 <footer class="py-8 border-t border-brand-pink/40 bg-brand-black">
   <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
     <img src="logo.png" alt="Personal Cinthya Suely" class="h-16 sm:h-20 w-auto opacity-90" />
-    <p class="text-brand-muted text-sm">
-      &copy; {{ currentYear }} Personal Cinthya Suely. Todos os direitos reservados.
+    <p class="text-brand-muted text-sm text-center sm:text-right">
+      &copy; {{ currentYear }} Personal Cinthya Suely · Consultoria online · Todos os direitos reservados.
     </p>
   </div>
 </footer>

@@ -1,12 +1,23 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CarouselSlide, SwipeCarouselComponent } from './swipe-carousel.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, SwipeCarouselComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
   protected readonly currentYear = new Date().getFullYear();
+
+  protected readonly resultSlides: CarouselSlide[] = Array.from({ length: 12 }, (_, i) => ({
+    src: `resultado${i + 1}.jpeg`,
+    alt: `Resultado de transformação ${i + 1}`,
+  }));
+
+  protected readonly testimonialSlides: CarouselSlide[] = [
+    { src: 'depoimento2.jpeg', alt: 'Depoimento de aluna 2' },
+    { src: 'depoimento3.jpeg', alt: 'Depoimento de aluna 3' },
+  ];
 }
