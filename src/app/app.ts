@@ -22,7 +22,7 @@ export class App {
   );
   protected readonly whatsappLink = `https://wa.me/${this.whatsappNumber}?text=${this.whatsappMessage}`;
   protected readonly mobileMenuOpen = signal(false);
-  protected readonly assistantOpen = signal(true);
+  protected readonly assistantOpen = signal(false);
 
   protected readonly assistantQuestions: AssistantQuestion[] = [
     {
