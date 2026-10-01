@@ -65,8 +65,11 @@ export type CarouselSlide = {
       scrollbar-width: none;
       -ms-overflow-style: none;
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
-      overscroll-behavior: contain;
+      touch-action: pan-x;
+      overscroll-behavior-x: contain;
+      overscroll-behavior-y: auto;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .carousel-track::-webkit-scrollbar {
@@ -76,6 +79,8 @@ export type CarouselSlide = {
     .carousel-slide {
       width: min(85vw, 320px);
       aspect-ratio: 3 / 4;
+      pointer-events: auto;
+      touch-action: pan-x;
     }
 
     @media (min-width: 768px) {
@@ -156,9 +161,14 @@ export class SwipeCarouselComponent {
   }
 
   protected scrollBy(direction: -1 | 1): void {
-    const next = this.activeIndex() + direction;
-    const wrapped =
-      next < 0 ? this.slides().length - 1 : next >= this.slides().length ? 0 : next;
-    this.scrollTo(wrapped);
+    let next = this.activeIndex() + direction;
+
+    if (next < 0) {
+      next = this.slides().length - 1;
+    } else if (next >= this.slides().length) {
+      next = 0;
+    }
+
+    this.scrollTo(next);
   }
 }
