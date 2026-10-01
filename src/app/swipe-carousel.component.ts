@@ -1,4 +1,4 @@
-import { Component, ElementRef, input, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, input, signal, viewChild } from '@angular/core';
 
 export type CarouselSlide = {
   src: string;
@@ -65,8 +65,8 @@ export type CarouselSlide = {
       scrollbar-width: none;
       -ms-overflow-style: none;
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-x pan-y;
-      overscroll-behavior: auto;
+      touch-action: pan-y;
+      overscroll-behavior: contain;
       user-select: none;
       -webkit-user-select: none;
     }
@@ -79,7 +79,7 @@ export type CarouselSlide = {
       width: min(85vw, 320px);
       aspect-ratio: 3 / 4;
       pointer-events: auto;
-      touch-action: pan-x pan-y;
+      touch-action: pan-y;
     }
 
     @media (min-width: 768px) {
@@ -119,11 +119,75 @@ export type CarouselSlide = {
     }
   `,
 })
-export class SwipeCarouselComponent {
+export class SwipeCarouselComponent implements AfterViewInit, OnDestroy {
   readonly slides = input.required<CarouselSlide[]>();
 
   private readonly track = viewChild<ElementRef<HTMLElement>>('track');
   protected readonly activeIndex = signal(0);
+
+  private startX = 0;
+  private startY = 0;
+  private startScrollLeft = 0;
+  private isDraggingHorizontal = false;
+
+  ngAfterViewInit(): void {
+    const el = this.track()?.nativeElement;
+    if (!el) {
+      return;
+    }
+
+    el.addEventListener('touchstart', this.handleTouchStart, { passive: true });
+    el.addEventListener('touchmove', this.handleTouchMove, { passive: false });
+    el.addEventListener('touchend', this.handleTouchEnd, { passive: true });
+    el.addEventListener('touchcancel', this.handleTouchEnd, { passive: true });
+  }
+
+  ngOnDestroy(): void {
+    const el = this.track()?.nativeElement;
+    if (!el) {
+      return;
+    }
+
+    el.removeEventListener('touchstart', this.handleTouchStart);
+    el.removeEventListener('touchmove', this.handleTouchMove);
+    el.removeEventListener('touchend', this.handleTouchEnd);
+    el.removeEventListener('touchcancel', this.handleTouchEnd);
+  }
+
+  private readonly handleTouchStart = (event: TouchEvent): void => {
+    const touch = event.touches[0];
+    this.startX = touch.clientX;
+    this.startY = touch.clientY;
+    const el = this.track()?.nativeElement;
+    this.startScrollLeft = el ? el.scrollLeft : 0;
+    this.isDraggingHorizontal = false;
+  };
+
+  private readonly handleTouchMove = (event: TouchEvent): void => {
+    const el = this.track()?.nativeElement;
+    if (!el || event.touches.length === 0) {
+      return;
+    }
+
+    const touch = event.touches[0];
+    const deltaX = touch.clientX - this.startX;
+    const deltaY = touch.clientY - this.startY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 12) {
+      this.isDraggingHorizontal = true;
+      event.preventDefault();
+      el.scrollLeft = this.startScrollLeft - deltaX;
+      return;
+    }
+
+    if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 12) {
+      this.isDraggingHorizontal = false;
+    }
+  };
+
+  private readonly handleTouchEnd = (): void => {
+    this.isDraggingHorizontal = false;
+  };
 
   protected onScroll(): void {
     const el = this.track()?.nativeElement;
