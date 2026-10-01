@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, input, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, input, signal, viewChild } from '@angular/core';
 
 export type CarouselSlide = {
   src: string;
@@ -13,6 +13,11 @@ export type CarouselSlide = {
         #track
         class="carousel-track flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-1 px-1"
         (scroll)="onScroll()"
+        (pointerdown)="onPointerDown($event)"
+        (pointermove)="onPointerMove($event)"
+        (pointerup)="onPointerUp()"
+        (pointerleave)="onPointerUp()"
+        (pointercancel)="onPointerUp()"
       >
         @for (slide of slides(); track slide.src; let i = $index) {
           <figure
@@ -67,8 +72,13 @@ export type CarouselSlide = {
       -webkit-overflow-scrolling: touch;
       touch-action: pan-y;
       overscroll-behavior: contain;
+      cursor: grab;
       user-select: none;
       -webkit-user-select: none;
+    }
+
+    .carousel-track:active {
+      cursor: grabbing;
     }
 
     .carousel-track::-webkit-scrollbar {
@@ -119,75 +129,51 @@ export type CarouselSlide = {
     }
   `,
 })
-export class SwipeCarouselComponent implements AfterViewInit, OnDestroy {
+export class SwipeCarouselComponent {
   readonly slides = input.required<CarouselSlide[]>();
 
   private readonly track = viewChild<ElementRef<HTMLElement>>('track');
   protected readonly activeIndex = signal(0);
 
-  private startX = 0;
-  private startY = 0;
-  private startScrollLeft = 0;
-  private isDraggingHorizontal = false;
+  private dragStartX = 0;
+  private dragStartY = 0;
+  private dragStartScrollLeft = 0;
+  private isDragging = false;
 
-  ngAfterViewInit(): void {
+  protected onPointerDown(event: PointerEvent): void {
     const el = this.track()?.nativeElement;
     if (!el) {
       return;
     }
 
-    el.addEventListener('touchstart', this.handleTouchStart, { passive: true });
-    el.addEventListener('touchmove', this.handleTouchMove, { passive: false });
-    el.addEventListener('touchend', this.handleTouchEnd, { passive: true });
-    el.addEventListener('touchcancel', this.handleTouchEnd, { passive: true });
+    this.dragStartX = event.clientX;
+    this.dragStartY = event.clientY;
+    this.dragStartScrollLeft = el.scrollLeft;
+    this.isDragging = true;
+
+    if (event.pointerType === 'touch') {
+      el.setPointerCapture?.(event.pointerId);
+    }
   }
 
-  ngOnDestroy(): void {
+  protected onPointerMove(event: PointerEvent): void {
     const el = this.track()?.nativeElement;
-    if (!el) {
+    if (!el || !this.isDragging) {
       return;
     }
 
-    el.removeEventListener('touchstart', this.handleTouchStart);
-    el.removeEventListener('touchmove', this.handleTouchMove);
-    el.removeEventListener('touchend', this.handleTouchEnd);
-    el.removeEventListener('touchcancel', this.handleTouchEnd);
-  }
+    const deltaX = event.clientX - this.dragStartX;
+    const deltaY = event.clientY - this.dragStartY;
 
-  private readonly handleTouchStart = (event: TouchEvent): void => {
-    const touch = event.touches[0];
-    this.startX = touch.clientX;
-    this.startY = touch.clientY;
-    const el = this.track()?.nativeElement;
-    this.startScrollLeft = el ? el.scrollLeft : 0;
-    this.isDraggingHorizontal = false;
-  };
-
-  private readonly handleTouchMove = (event: TouchEvent): void => {
-    const el = this.track()?.nativeElement;
-    if (!el || event.touches.length === 0) {
-      return;
-    }
-
-    const touch = event.touches[0];
-    const deltaX = touch.clientX - this.startX;
-    const deltaY = touch.clientY - this.startY;
-
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 12) {
-      this.isDraggingHorizontal = true;
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 8) {
       event.preventDefault();
-      el.scrollLeft = this.startScrollLeft - deltaX;
-      return;
+      el.scrollLeft = this.dragStartScrollLeft - deltaX;
     }
+  }
 
-    if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 12) {
-      this.isDraggingHorizontal = false;
-    }
-  };
-
-  private readonly handleTouchEnd = (): void => {
-    this.isDraggingHorizontal = false;
-  };
+  protected onPointerUp(): void {
+    this.isDragging = false;
+  }
 
   protected onScroll(): void {
     const el = this.track()?.nativeElement;
