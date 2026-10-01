@@ -65,6 +65,8 @@ export type CarouselSlide = {
       scrollbar-width: none;
       -ms-overflow-style: none;
       -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior: contain;
     }
 
     .carousel-track::-webkit-scrollbar {

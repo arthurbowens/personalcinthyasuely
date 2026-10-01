@@ -10,6 +10,10 @@ import { CarouselSlide, SwipeCarouselComponent } from './swipe-carousel.componen
 })
 export class App {
   protected readonly currentYear = new Date().getFullYear();
+  protected readonly whatsappMessage = encodeURIComponent(
+    'Olá, Cinthya! Quero saber mais sobre a consultoria online e começar minha transformação.',
+  );
+  protected readonly whatsappLink = `https://wa.me/559991544003?text=${this.whatsappMessage}`;
 
   protected readonly resultSlides: CarouselSlide[] = Array.from({ length: 12 }, (_, i) => ({
     src: `resultado${i + 1}.jpeg`,
