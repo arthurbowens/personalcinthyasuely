@@ -1,4 +1,4 @@
-import { Component, ElementRef, input, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, input, signal, viewChild } from '@angular/core';
 
 export type CarouselSlide = {
   src: string;
@@ -13,11 +13,6 @@ export type CarouselSlide = {
         #track
         class="carousel-track flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-1 px-1"
         (scroll)="onScroll()"
-        (pointerdown)="onPointerDown($event)"
-        (pointermove)="onPointerMove($event)"
-        (pointerup)="onPointerUp()"
-        (pointerleave)="onPointerUp()"
-        (pointercancel)="onPointerUp()"
       >
         @for (slide of slides(); track slide.src; let i = $index) {
           <figure
@@ -72,13 +67,8 @@ export type CarouselSlide = {
       -webkit-overflow-scrolling: touch;
       touch-action: pan-y;
       overscroll-behavior: contain;
-      cursor: grab;
       user-select: none;
       -webkit-user-select: none;
-    }
-
-    .carousel-track:active {
-      cursor: grabbing;
     }
 
     .carousel-track::-webkit-scrollbar {
@@ -88,7 +78,6 @@ export type CarouselSlide = {
     .carousel-slide {
       width: min(85vw, 320px);
       aspect-ratio: 3 / 4;
-      pointer-events: auto;
       touch-action: pan-y;
     }
 
@@ -129,51 +118,105 @@ export type CarouselSlide = {
     }
   `,
 })
-export class SwipeCarouselComponent {
+export class SwipeCarouselComponent implements AfterViewInit, OnDestroy {
   readonly slides = input.required<CarouselSlide[]>();
 
   private readonly track = viewChild<ElementRef<HTMLElement>>('track');
   protected readonly activeIndex = signal(0);
 
-  private dragStartX = 0;
-  private dragStartY = 0;
-  private dragStartScrollLeft = 0;
-  private isDragging = false;
+  private startX = 0;
+  private startY = 0;
+  private startScrollLeft = 0;
+  private dragDeltaX = 0;
+  private isHorizontalGesture = false;
+  private isTouching = false;
 
-  protected onPointerDown(event: PointerEvent): void {
+  ngAfterViewInit(): void {
     const el = this.track()?.nativeElement;
     if (!el) {
       return;
     }
 
-    this.dragStartX = event.clientX;
-    this.dragStartY = event.clientY;
-    this.dragStartScrollLeft = el.scrollLeft;
-    this.isDragging = true;
-
-    if (event.pointerType === 'touch') {
-      el.setPointerCapture?.(event.pointerId);
-    }
+    el.addEventListener('touchstart', this.handleTouchStart, { passive: true });
+    el.addEventListener('touchmove', this.handleTouchMove, { passive: false });
+    el.addEventListener('touchend', this.handleTouchEnd, { passive: true });
+    el.addEventListener('touchcancel', this.handleTouchEnd, { passive: true });
   }
 
-  protected onPointerMove(event: PointerEvent): void {
+  ngOnDestroy(): void {
     const el = this.track()?.nativeElement;
-    if (!el || !this.isDragging) {
+    if (!el) {
       return;
     }
 
-    const deltaX = event.clientX - this.dragStartX;
-    const deltaY = event.clientY - this.dragStartY;
+    el.removeEventListener('touchstart', this.handleTouchStart);
+    el.removeEventListener('touchmove', this.handleTouchMove);
+    el.removeEventListener('touchend', this.handleTouchEnd);
+    el.removeEventListener('touchcancel', this.handleTouchEnd);
+  }
+
+  private readonly handleTouchStart = (event: TouchEvent): void => {
+    const touch = event.touches[0];
+    const el = this.track()?.nativeElement;
+    if (!el || !touch) {
+      return;
+    }
+
+    this.startX = touch.clientX;
+    this.startY = touch.clientY;
+    this.startScrollLeft = el.scrollLeft;
+    this.dragDeltaX = 0;
+    this.isHorizontalGesture = false;
+    this.isTouching = true;
+  };
+
+  private readonly handleTouchMove = (event: TouchEvent): void => {
+    const el = this.track()?.nativeElement;
+    if (!el || !this.isTouching || event.touches.length === 0) {
+      return;
+    }
+
+    const touch = event.touches[0];
+    const deltaX = touch.clientX - this.startX;
+    const deltaY = touch.clientY - this.startY;
 
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 8) {
+      this.isHorizontalGesture = true;
+      this.dragDeltaX = deltaX;
       event.preventDefault();
-      el.scrollLeft = this.dragStartScrollLeft - deltaX;
+      el.scrollLeft = this.startScrollLeft - deltaX;
+      return;
     }
-  }
 
-  protected onPointerUp(): void {
-    this.isDragging = false;
-  }
+    if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 8) {
+      this.isHorizontalGesture = false;
+      this.dragDeltaX = 0;
+    }
+  };
+
+  private readonly handleTouchEnd = (): void => {
+    if (!this.isTouching) {
+      return;
+    }
+
+    const el = this.track()?.nativeElement;
+    if (!el) {
+      this.isTouching = false;
+      this.isHorizontalGesture = false;
+      this.dragDeltaX = 0;
+      return;
+    }
+
+    if (this.isHorizontalGesture && Math.abs(this.dragDeltaX) > el.clientWidth * 0.2) {
+      this.scrollBy(this.dragDeltaX < 0 ? 1 : -1);
+    } else {
+      this.scrollTo(this.activeIndex());
+    }
+
+    this.isTouching = false;
+    this.isHorizontalGesture = false;
+    this.dragDeltaX = 0;
+  };
 
   protected onScroll(): void {
     const el = this.track()?.nativeElement;
