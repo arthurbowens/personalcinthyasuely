@@ -59,6 +59,145 @@
   }
 </header>
 
+<button
+  type="button"
+  (click)="toggleAssistant()"
+  class="fixed bottom-5 right-5 z-[60] flex items-center gap-3 rounded-full border border-brand-pink/40 bg-brand-black/90 px-3 py-2 shadow-2xl shadow-brand-pink/20 backdrop-blur-md transition-all hover:scale-[1.02]"
+>
+  <div class="relative">
+    <img src="foto2.jpeg" alt="Cinthya Suely" class="h-12 w-12 rounded-full object-cover ring-2 ring-brand-pink/60" />
+    <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-400 ring-2 ring-brand-black"></span>
+  </div>
+  <div class="flex flex-col leading-none text-left">
+    <span class="text-[10px] uppercase tracking-[0.2em] text-brand-pink">Assistente</span>
+    <span class="text-sm font-semibold text-white">Cinthya</span>
+  </div>
+</button>
+
+@if (assistantOpen()) {
+  <div class="fixed inset-0 z-[55] flex items-center justify-center bg-[#f8dfe7]/75 p-3 backdrop-blur-sm sm:p-5">
+    <div class="w-full max-w-[480px] overflow-hidden rounded-[28px] border border-[#e9bfd0] bg-[#fffafc] shadow-[0_30px_80px_rgba(58,20,34,0.18)]">
+      <div class="flex items-center justify-between border-b border-[#f0d7df] bg-[#fdf1f6] px-4 py-3 sm:px-5">
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            (click)="closeAssistant()"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-[#341d28] transition hover:bg-white"
+            aria-label="Fechar assistente"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <path d="M15 18L9 12L15 6" />
+            </svg>
+          </button>
+
+          <div class="relative">
+            <img src="foto2.jpeg" alt="Cinthya" class="h-11 w-11 rounded-full object-cover ring-2 ring-[#f5bfd3]" />
+            <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#21c067] ring-2 ring-[#fffafc]"></span>
+          </div>
+
+          <div class="leading-tight">
+            <p class="text-[12px] font-black uppercase tracking-[0.16em] text-[#3b2330]">Cinthya</p>
+            <p class="text-[10px] font-medium uppercase tracking-[0.18em] text-[#7f5865]">online agora</p>
+          </div>
+        </div>
+
+        <a
+          type="button"
+          class="inline-flex items-center gap-2 rounded-full bg-[#25d366] px-2.5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-white shadow-lg shadow-[#25d366]/25 transition hover:scale-[1.02]"
+          aria-label="Abrir WhatsApp"
+          [href]="whatsappLink"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M9.72 17.93l-.004.004a9.87 9.87 0 0 1-5.03-1.378l-.36-.214-3.74.982.998-3.647-.236-.374a9.86 9.86 0 1 1 15.566 11.81Z"/>
+          </svg>
+          WhatsApp
+        </a>
+      </div>
+
+      <div class="bg-[linear-gradient(180deg,#fff9fb_0%,#f9eaf1_100%)] px-4 pb-4 pt-5 sm:px-5">
+        <div class="space-y-4">
+          <div class="max-w-[86%] rounded-[18px] rounded-bl-[6px] bg-[#f6dce6] px-4 py-3 text-[14px] leading-relaxed text-[#351d29] shadow-sm">
+            <span class="font-semibold">Oi!</span> Sou a assistente da Cinthya 💗<br />
+            Posso te ajudar a encontrar o melhor plano de atendimento para você.
+          </div>
+
+          @if (!assistantFinished()) {
+            <div class="ml-auto max-w-[86%] rounded-[18px] rounded-br-[6px] bg-[#25d366] px-4 py-3 text-[14px] leading-relaxed text-white shadow-sm">
+              {{ currentAssistantQuestion.question }}
+            </div>
+
+            <div class="space-y-2.5 pt-1">
+              @for (option of currentAssistantQuestion.options; track option.value) {
+                <button
+                  type="button"
+                  class="w-full rounded-2xl border border-[#ecbfd2] bg-white/80 px-4 py-3 text-left text-[14px] font-medium text-[#2a1d24] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#fff5f8]"
+                  (click)="selectAssistantOption(option.value)"
+                >
+                  {{ option.label }}
+                </button>
+              }
+            </div>
+          } @else {
+            <div class="max-w-[86%] rounded-[18px] rounded-bl-[6px] bg-[#f5d4e1] px-4 py-3 text-[14px] leading-relaxed text-[#351d29] shadow-sm">
+              Perfeito! Já tenho tudo que preciso para te encaminhar certo pelo WhatsApp.
+            </div>
+
+            <div class="pt-2">
+              <a
+                [href]="getAssistantWhatsappLink()"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex w-full items-center justify-center gap-3 rounded-2xl bg-[#25d366] px-4 py-3 text-base font-semibold text-white shadow-[0_12px_24px_rgba(37,211,102,0.25)] transition hover:scale-[1.01]"
+              >
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M9.72 17.93l-.004.004a9.87 9.87 0 0 1-5.03-1.378l-.36-.214-3.74.982.998-3.647-.236-.374a9.86 9.86 0 1 1 15.566 11.81Z"/>
+                </svg>
+                Falar no WhatsApp
+              </a>
+
+              <button
+                type="button"
+                class="mt-3 w-full rounded-2xl border border-[#e7c8d4] bg-white/80 px-4 py-3 text-[14px] font-medium text-[#2a1d24] transition hover:bg-[#fff5f8]"
+                (click)="resetAssistant()"
+              >
+                Responder novamente
+              </button>
+            </div>
+          }
+        </div>
+
+        <div class="mt-5 border-t border-[#f0d7df] pt-3">
+          <div class="flex items-center gap-2 rounded-[18px] border border-[#e9bfd0] bg-white/80 p-2 shadow-sm">
+            <label for="assistant-input" class="sr-only">Seu primeiro nome</label>
+            <input
+              id="assistant-input"
+              type="text"
+              value=""
+              readonly
+              placeholder="Seu primeiro nome"
+              class="h-[48px] flex-1 rounded-[14px] border-0 bg-transparent px-3 text-[14px] text-[#2a1d24] placeholder:text-[#876772] outline-none"
+              aria-label="Seu primeiro nome"
+            />
+            <button
+              type="button"
+              class="inline-flex h-[46px] w-[46px] items-center justify-center rounded-[14px] bg-[#25d366] text-white transition hover:scale-[1.02]"
+              (click)="openAssistant()"
+              aria-label="Enviar"
+            >
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14" />
+                <path d="M13 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
 <!-- Hero -->
 <section class="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden bg-brand-black">
   <div class="absolute inset-0 bg-gradient-to-br from-brand-black via-brand-dark to-brand-pink/40"></div>
@@ -69,7 +208,7 @@
   <div class="relative max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
     <div class="order-2 lg:order-1">
       <span class="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-widest uppercase text-brand-pink border border-brand-pink/50 rounded-full bg-brand-pink/10">
-        Personal Trainer para Mulheres · Consultoria online
+        Personal Trainer para Mulheres · Aula presencial em Açailândia, Maranhão
       </span>
       <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-white">
         Reconstrua sua <span class="text-brand-pink italic">autoestima</span> e volte a se sentir poderosa
@@ -88,7 +227,7 @@
         evoluem juntas.
       </p>
       <p class="text-base text-brand-pink/90 font-medium mb-8 max-w-lg">
-        Consultoria online: acompanho você de onde estiver, com treino e orientação personalizados.
+        Consultoria online e também atendimento presencial em Açailândia, Maranhão, com treino e orientação personalizados.
       </p>
       <div class="flex flex-col sm:flex-row gap-4">
         <a
@@ -99,12 +238,13 @@
         >
           Quero transformar minha vida
         </a>
-        <a
-          href="#metodo"
+        <button
+          type="button"
+          (click)="openAssistant()"
           class="inline-flex items-center justify-center px-8 py-4 border-2 border-brand-pink/60 hover:bg-brand-pink/15 text-white font-medium rounded-full transition-all"
         >
-          Conheça o método
-        </a>
+          Falar com a assistente
+        </button>
       </div>
     </div>
 
@@ -119,6 +259,92 @@
           />
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- Assistente -->
+<section id="assistente" class="py-24 bg-brand-black relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-brand-pink/10 via-transparent to-brand-pink/10"></div>
+  <div class="relative max-w-5xl mx-auto px-6">
+    <div class="text-center mb-10">
+      <span class="text-brand-pink text-sm font-semibold tracking-widest uppercase">Assistente</span>
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 mb-4 text-white">
+        Vamos te ajudar a encontrar o melhor caminho
+      </h2>
+      <p class="text-white/70 max-w-2xl mx-auto text-lg">
+        Responda 3 perguntas rápidas e te encaminho para o WhatsApp com a mensagem certa.
+      </p>
+    </div>
+
+    <div class="max-w-2xl mx-auto rounded-3xl border border-brand-pink/30 bg-white/5 backdrop-blur-sm p-6 sm:p-8 shadow-2xl shadow-brand-pink/10">
+      @if (!assistantFinished()) {
+        <div>
+          <div class="mb-6 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <img src="foto2.jpeg" alt="Perfil da Cinthya" class="h-10 w-10 rounded-full object-cover" />
+              <span class="text-sm text-brand-pink font-semibold uppercase tracking-wide">
+                Assistente Cinthya
+              </span>
+            </div>
+            <button
+              type="button"
+              class="text-sm text-white/70 hover:text-white transition-colors"
+              (click)="resetAssistant()"
+            >
+              Reiniciar
+            </button>
+          </div>
+
+          <h3 class="text-2xl font-semibold text-white mb-6">
+            {{ currentAssistantQuestion.question }}
+          </h3>
+
+          <div class="space-y-3">
+            @for (option of currentAssistantQuestion.options; track option.value) {
+              <button
+                type="button"
+                class="w-full text-left px-5 py-4 rounded-2xl border border-brand-pink/30 bg-brand-black/60 text-white hover:bg-brand-pink/10 transition-all"
+                (click)="selectAssistantOption(option.value)"
+              >
+                {{ option.label }}
+              </button>
+            }
+          </div>
+        </div>
+      } @else {
+        <div class="text-center">
+          <div class="mb-5 inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-pink/20 text-brand-pink text-3xl">
+            ✓
+          </div>
+          <h3 class="text-2xl font-semibold text-white mb-4">
+            Tudo certo! Seu perfil foi enviado.
+          </h3>
+          <p class="text-white/70 text-lg mb-6">
+            Agora é só falar com a Cinthya no WhatsApp para começar sua transformação.
+          </p>
+
+          <a
+            [href]="getAssistantWhatsappLink()"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-brand-pink hover:bg-brand-pink-dark text-white font-semibold rounded-full transition-all hover:scale-105 shadow-lg shadow-brand-pink/40"
+          >
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Falar no WhatsApp
+          </a>
+
+          <button
+            type="button"
+            class="mt-6 text-sm text-white/70 hover:text-white transition-colors"
+            (click)="resetAssistant()"
+          >
+            Responder novamente
+          </button>
+        </div>
+      }
     </div>
   </div>
 </section>
@@ -265,22 +491,35 @@
       Você merece se sentir bonita, forte e confiante em todas as fases da sua vida.
     </p>
     <p class="text-brand-black/80 text-lg mb-4 max-w-xl mx-auto">
-      Atendo online em todo o Brasil. O primeiro passo é uma conversa no WhatsApp.
+      Atendo online em todo o Brasil e também com aulas presenciais em Açailândia, Maranhão.
+    </p>
+    <p class="text-brand-black/80 text-lg mb-4 max-w-xl mx-auto">
+      O primeiro passo é uma conversa no WhatsApp.
     </p>
     <p class="text-brand-black/80 text-lg mb-10 max-w-xl mx-auto">
-      Clique no botão abaixo e comece sua consultoria online personalizada.
+      Clique no botão abaixo e comece sua consultoria online ou presencial personalizada.
     </p>
-    <a
-      [href]="whatsappLink"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="inline-flex items-center gap-3 px-10 py-5 bg-brand-black hover:bg-brand-dark text-white font-semibold text-lg rounded-full transition-all hover:scale-105 shadow-xl"
-    >
-      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-      </svg>
-      Fale comigo no WhatsApp
-    </a>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a
+        [href]="whatsappLink"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-3 px-10 py-5 bg-brand-black hover:bg-brand-dark text-white font-semibold text-lg rounded-full transition-all hover:scale-105 shadow-xl"
+      >
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Fale comigo no WhatsApp
+      </a>
+
+      <button
+        type="button"
+        (click)="openAssistant()"
+        class="inline-flex items-center justify-center px-8 py-5 border-2 border-brand-black/60 bg-white/10 text-brand-black font-semibold text-lg rounded-full transition-all hover:scale-105"
+      >
+        Falar com a assistente
+      </button>
+    </div>
   </div>
 </section>
 
@@ -289,7 +528,7 @@
   <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
     <img src="logo.png" alt="Personal Cinthya Suely" class="h-16 sm:h-20 w-auto opacity-90" />
     <p class="text-brand-muted text-sm text-center sm:text-right">
-      &copy; {{ currentYear }} Personal Cinthya Suely · Consultoria online · Todos os direitos reservados.
+      &copy; {{ currentYear }} Personal Cinthya Suely · Aula presencial em Açailândia, Maranhão · Todos os direitos reservados.
     </p>
   </div>
 </footer>
